@@ -5,7 +5,6 @@ var TwitterStrategy   = require('passport-twitter').Strategy;
 var _                 = require('lodash');
 var qs                = require('qs');
 var logger            = require('yocto-logger');
-var path              = require('path');
 var Strategy          = require('passport-local').Strategy;
 var signature         = require('cookie-signature');
 var LdapStrategy      = require('passport-ldapauth');
@@ -225,9 +224,9 @@ Auth.prototype.setEndPoint = function () {
 
         // Return an HTTP response
         return res.status(200).jsonp({
-            status  : "error",
-            code    : "400101",
-            message : error
+          status  : 'error',
+          code    : '400101',
+          message : error
         });
       }
 

@@ -1,0 +1,115 @@
+{
+  "models" : {
+    "model" : {
+      
+  },
+  "apidoc" : {
+    "methods" : [
+      {
+        "apiVersion"    : "0.1.0",
+        "type"          : "get",
+        "title"         : "GET User(s)",
+        "path"          : "/user/:user_id",
+        "apiPermission"  : "admin",
+        "addDefaultParamFromModel" : false,
+        "methodDescription" : "Method to retrieve one or all user, if you want get one user you should specify his id, otherwise the whole users are returned",
+        "specificParam" : [
+          {
+            "name"  : "user_id",
+            "type"  : "Object_id"
+          }
+        ],
+        "apiSuccessExample" : {
+          "name"    : "Success-Response",
+          "addDefaultParamFromModel" : true,
+          "example" : {
+            "header"  : "HTTP/1.1 200 OK"
+          }
+        },
+        "apiErrorExample" : "notFound"
+      },
+      {
+        "apiVersion"    : "0.1.0",
+        "type"          : "head",
+        "title"         : "HEAD of User(s)",
+        "path"          : "/user/:user_id",
+        "apiPermission"  : "admin",
+        "methodDescription" : "Method to retrieve the header of one or all user, if you want get  the header of one user you should specify his id, otherwise the header of whole users are returned",
+        "addDefaultParamFromModel" : false,
+        "specificParam" : [
+          {
+            "name"  : "user_id",
+            "type"  : "Object_id"
+          }
+        ],
+        "apiSuccessExample" : "none",
+        "apiErrorExample" : "notFound"
+      },
+      {
+        "apiVersion" : "0.1.0",
+        "type"      : "post",
+        "path"      : "/user/",
+        "methodDescription" : "Method to add a new user in database",
+        "title"         : "POST one User",
+        "apiPermission"  : "admin",
+        "specificParam" : [],
+        "apiSuccessExample" : "success",
+        "apiErrorExample" : "notFound"
+      },
+      {
+        "apiVersion"    : "0.1.0",
+        "type"          : "delete",
+        "title"         : "DELETE one User",
+        "path"          : "/user/:user_id",
+        "apiPermission"  : "admin",
+        "methodDescription" : "Method to delete a user in database",
+        "addDefaultParamFromModel" : false,
+        "specificParam" : [
+          {
+            "name"  : "user_id",
+            "type"  : "Object_id",
+            "required" : true
+          }
+        ],
+        "apiSuccessExample" : "success",
+        "apiErrorExample" : "notFound"
+      },
+      {
+        "apiVersion"    : "0.1.0",
+        "type"          : "patch",
+        "title"         : "PATCH one User",
+        "path"          : "/user/:user_id",
+        "apiPermission"  : "admin",
+        "methodDescription" : "Method to patch a specific param to user in database",
+        "addDefaultParamFromModel" : true,
+        "specificParam" : [
+          {
+            "name"  : "user_id",
+            "type"  : "Object_id",
+            "required" : true
+          }
+        ],
+        "apiSuccessExample" : "success",
+        "apiErrorExample" : "notFound"
+      },
+      {
+        "apiVersion"    : "0.1.0",
+        "type"          : "put",
+        "title"         : "PUT one User",
+        "path"          : "/user/:user_id",
+        "apiPermission"  : "admin",
+        "methodDescription" : "Method to put all property of a user in database",
+        "addDefaultParamFromModel" : true,
+        "specificParam" : [
+          {
+            "name"  : "user_id",
+            "type"  : "Object_id",
+            "required" : true
+          }
+        ],
+        "apiSuccessExample" : "success",
+        "apiErrorExample" : "notFound"
+      }
+    ]
+  }
+}

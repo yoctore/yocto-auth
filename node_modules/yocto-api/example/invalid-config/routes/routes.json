@@ -1,0 +1,17 @@
+{
+  "routes" : [
+    {
+      "path"              : "/users",
+      "alias"             : ["/user"],
+      "model"             :44,
+      "requestExcluded"   : ["put", "delete" , "patch"]
+    },
+    {
+      "path"                : 344,
+      "alias"               : ["/user/:user_id"],
+      "model"               : 4434,
+      "paramToRetrieve"     : ["user_id"],
+      "requestExcluded"     : ["post"]
+    }
+  ]
+}
