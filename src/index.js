@@ -199,7 +199,7 @@ Auth.prototype.setEndPoint = function () {
           req.session.passport.user = account;
 
           // redirect to the 'caller' with the id of session
-          res.redirect(req.session.ecrm.urlRedirectSuccess + '/sucess?' + qs.stringify({
+          res.redirect(req.session.ecrm.urlRedirectSuccess + '/success?' + qs.stringify({
             session : 's:' + signature.sign(req.sessionID, context.dataCommon.secretCookieKey)
           }));
         }).catch(function (error) {
