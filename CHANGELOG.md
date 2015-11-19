@@ -1,3 +1,7 @@
+# 0.1.2 (2015-11-19)
+
+  - update url Redirect '/auth/success/join' in '/auth/join/success' and '/auth/fail/join' in '/auth/join/fail'
+
 # 0.1.1 (2015-11-19)
 
   - Redirect when connect fail for standard ou ad instead of send an http response

@@ -164,7 +164,7 @@ Auth.prototype.setEndPoint = function () {
           delete req.session.join;
 
           // redirect to the 'caller' for success with the name of provider
-          res.redirect(req.session.ecrm.urlRedirectSuccess + '/join?value=' +
+          res.redirect(req.session.ecrm.urlRedirectSuccess + '/join/success?value=' +
           encode('{"provider":' + params.provider + '}'));
         }).catch(function (error) {
 
@@ -173,7 +173,7 @@ Auth.prototype.setEndPoint = function () {
           'this social network "' , error);
 
           // uppdate error redirection
-          req.session.ecrm.urlRedirectFail += '/join?value=' +
+          req.session.ecrm.urlRedirectFail += '/join/fail?value=' +
           encode('{"provider":' + params.provider + '}');
 
           // remove the temporary value in session
@@ -199,7 +199,7 @@ Auth.prototype.setEndPoint = function () {
           req.session.passport.user = account;
 
           // redirect to the 'caller' with the id of session
-          res.redirect(req.session.ecrm.urlRedirectSuccess + '?' + qs.stringify({
+          res.redirect(req.session.ecrm.urlRedirectSuccess + '/sucess?' + qs.stringify({
             session : 's:' + signature.sign(req.sessionID, context.dataCommon.secretCookieKey)
           }));
         }).catch(function (error) {
@@ -221,7 +221,7 @@ Auth.prototype.setEndPoint = function () {
       provider + '", more details : ' , error);
 
       // redirect to an error page with code error in url
-      res.redirect(req.session.ecrm.urlRedirectFail + '?value=' +
+      res.redirect(req.session.ecrm.urlRedirectFail + '/fail?value=' +
       encode('{"status":"error","code":"400101"}'));
     }
   });
@@ -429,8 +429,8 @@ function setUrlSession (req) {
 
   // Set redirection url in session
   req.session.ecrm = {
-    urlRedirectSuccess : urlParse.protocol + '//' + urlParse.host + '/auth/success',
-    urlRedirectFail    : urlParse.protocol + '//' + urlParse.host + '/auth/fail'
+    urlRedirectSuccess : urlParse.protocol + '//' + urlParse.host + '/auth',
+    urlRedirectFail    : urlParse.protocol + '//' + urlParse.host + '/auth'
   };
 }
 
