@@ -14,13 +14,13 @@ var utf8              = require('utf8');
 var utils             = require('yocto-utils');
 
 /**
-* Yocto-Auth : Express middleware for authentication
-*
-* @date : 29/09/2015
-* @author : Cedric Balard <cedric@yocto.re>
-* @copyright : Yocto SAS, All right reserved
-* @class Auth
-*/
+ * Yocto-Auth : Express middleware for authentication
+ *
+ * @date : 29/09/2015
+ * @author : Cedric Balard <cedric@yocto.re>
+ * @copyright : Yocto SAS, All right reserved
+ * @class Auth
+ */
 function Auth (yLogger) {
 
   /**
@@ -163,9 +163,9 @@ Auth.prototype.setEndPoint = function () {
           // Call function to handle error
           delete req.session.join;
 
-          // TODO update redirect to : res.redirect(req.session.ecrm.urlRedirectSuccess + '/join/provider/params.provider');
-          // redirect to the 'caller' for success
-          res.redirect(req.session.ecrm.urlRedirectSuccess + '/join');
+          // redirect to the 'caller' for success with the name of provider
+          res.redirect(req.session.ecrm.urlRedirectSuccess + '/join?value=' +
+          encode('{"provider":' + params.provider + '}'));
         }).catch(function (error) {
 
           // An error occurred during connection
@@ -173,7 +173,8 @@ Auth.prototype.setEndPoint = function () {
           'this social network "' , error);
 
           // uppdate error redirection
-          req.session.ecrm.urlRedirectSuccess += '/join';
+          req.session.ecrm.urlRedirectFail += '/join?value=' +
+          encode('{"provider":' + params.provider + '}');
 
           // remove the temporary value in session
           delete req.session.join;
@@ -219,29 +220,19 @@ Auth.prototype.setEndPoint = function () {
       context.logger.error('[ yocto-auth.endPoint ] error authentication for provider "' +
       provider + '", more details : ' , error);
 
-      // test if we send an http response or redirect
-      if (provider === 'standard' || provider === 'ad') {
-
-        // Return an HTTP response
-        return res.status(200).jsonp({
-          status  : 'error',
-          code    : '400101',
-          message : error
-        });
-      }
-
-      // redirect to an error page
-      res.redirect(req.session.ecrm.urlRedirectFail);
+      // redirect to an error page with code error in url
+      res.redirect(req.session.ecrm.urlRedirectFail + '?value=' +
+      encode('{"status":"error","code":"400101"}'));
     }
   });
 };
 
 /**
-* Enable Twitter authentication
-*
-* @method enableTwitter
-* @param  {Object} data configuration of stragtegy
-*/
+ * Enable Twitter authentication
+ *
+ * @method enableTwitter
+ * @param  {Object} data configuration of stragtegy
+ */
 Auth.prototype.enableTwitter = function (data) {
 
   // Save config
@@ -275,11 +266,11 @@ Auth.prototype.enableTwitter = function (data) {
 };
 
 /**
-* Enable Standard authentication
-*
-* @method enableStandard
-* @param  {Object} data configuration of stragtegy
-*/
+ * Enable Standard authentication
+ *
+ * @method enableStandard
+ * @param  {Object} data configuration of stragtegy
+ */
 Auth.prototype.enableStandard = function (data) {
 
   // Save config
@@ -322,10 +313,10 @@ Auth.prototype.enableStandard = function (data) {
 };
 
 /**
-* Enable Facebook authentication
-*
-* @param  {Object} data configuration of stragtegy
-*/
+ * Enable Facebook authentication
+ *
+ * @param  {Object} data configuration of stragtegy
+ */
 Auth.prototype.enableFacebook = function (data) {
 
   // Save config
@@ -361,13 +352,13 @@ Auth.prototype.enableFacebook = function (data) {
 };
 
 /**
-* Function that bind a passport Strategy to an http route
-* Create the call and callback routes
-*
-* @param  {Object} data        Data of the routes and strategy
-* @param  {String} provider    Name of the provider
-* @param  {Object} context     The main context
-*/
+ * Function that bind a passport Strategy to an http route
+ * Create the call and callback routes
+ *
+ * @param  {Object} data        Data of the routes and strategy
+ * @param  {String} provider    Name of the provider
+ * @param  {Object} context     The main context
+ */
 function bindStrategy (data, provider, context) {
 
   // Create the call route for an strategy
@@ -404,11 +395,11 @@ function bindStrategy (data, provider, context) {
 
 // TODO : migrer vers yocto-utils
 /**
-* Encode data in base64
-*
-* @param  {String} data data to encode
-* @return {String} The encoded string
-*/
+ * Encode data in base64
+ *
+ * @param  {String} data data to encode
+ * @return {String} The encoded string
+ */
 function encode (data) {
   var bytes = utf8.encode(data);
   return base64.encode(bytes);
@@ -416,21 +407,21 @@ function encode (data) {
 
 // TODO : migrer vers yocto-utils
 /**
-* Decode  data in base64
-*
-* @param  {String} data data to decode
-* @return {String} The decoded string
-*/
+ * Decode  data in base64
+ *
+ * @param  {String} data data to decode
+ * @return {String} The decoded string
+ */
 function decode (data) {
   var bytes = base64.decode(data);
   return utf8.decode(bytes);
 }
 
 /**
-* Set Default url redirection in session
-*
-* @param  {Object} req Default obj req of ExpressJS
-*/
+ * Set Default url redirection in session
+ *
+ * @param  {Object} req Default obj req of ExpressJS
+ */
 function setUrlSession (req) {
 
   // retrieve headers of request
@@ -444,11 +435,11 @@ function setUrlSession (req) {
 }
 
 /**
-* Enable Google authentication
-*
-* @method enableGoogle
-* @param  {Object} data configuration of stragtegy
-*/
+ * Enable Google authentication
+ *
+ * @method enableGoogle
+ * @param  {Object} data configuration of stragtegy
+ */
 Auth.prototype.enableGoogle = function (data) {
 
   // Save config
@@ -483,11 +474,11 @@ Auth.prototype.enableGoogle = function (data) {
 };
 
 /**
-* Enable active directory authentication
-*
-* @method enableActiveDirectory
-* @param  {Object} data configuration of stragtegy
-*/
+ * Enable active directory authentication
+ *
+ * @method enableActiveDirectory
+ * @param  {Object} data configuration of stragtegy
+ */
 Auth.prototype.enableActiveDirectory = function (data) {
 
   // Save config
@@ -533,7 +524,6 @@ Auth.prototype.enableActiveDirectory = function (data) {
 };
 
 // Exports Middleware
-// module.exports = new (Auth) ();
 module.exports = function (logger) {
   return new (Auth)(logger);
 };
