@@ -165,7 +165,7 @@ Auth.prototype.setEndPoint = function () {
 
           // redirect to the 'caller' for success with the name of provider
           res.redirect(req.session.ecrm.urlRedirectSuccess + '/join/success?value=' +
-          encode('{"provider":' + params.provider + '}'));
+          encode('{"provider":"' + params.provider + '"}'));
         }).catch(function (error) {
 
           // An error occurred during connection
@@ -174,7 +174,7 @@ Auth.prototype.setEndPoint = function () {
 
           // uppdate error redirection
           req.session.ecrm.urlRedirectFail += '/join/fail?value=' +
-          encode('{"provider":' + params.provider + '}');
+          encode('{"provider":"' + params.provider + '"}');
 
           // remove the temporary value in session
           delete req.session.join;
