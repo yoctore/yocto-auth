@@ -51,7 +51,7 @@
     "yocto-api": "git+ssh://git@gitlab.com:yocto-node-modules/yocto-api.git",
     "yocto-config": "1.3.6",
     "yocto-logger": "1.1.1",
-    "yocto-utils": "1.0.2"
+    "yocto-utils": "^1.1.2"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
