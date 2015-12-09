@@ -1,3 +1,11 @@
+# 0.2.0(2015-11-19)
+  - update name of function :
+    - enableStandard -> addStandard
+    - enableActiveDirectory -> addStandard
+    - enableFacebook -> addFacebook
+    - enableTwitter -> addTwitter
+    - enableGoogle -> addGoogle
+
 # 0.1.2 (2015-11-19)
 
   - update url Redirect '/auth/success/join' in '/auth/join/success' and '/auth/fail/join' in '/auth/join/fail'

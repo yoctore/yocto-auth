@@ -72,12 +72,12 @@ Auth.prototype.init = function (app, AuthModel, data) {
   // initialize passportjs
   app.use(passport.initialize());
 
-  // Enable serialize user
+  // enable serialize user
   passport.serializeUser(function (user, done) {
     done(null, user);
   });
 
-  // Enable deserialize user
+  // enable deserialize user
   passport.deserializeUser(function (user, done) {
     done(null, user);
   });
@@ -228,12 +228,12 @@ Auth.prototype.setEndPoint = function () {
 };
 
 /**
- * Enable Twitter authentication
+ * add Twitter authentication
  *
- * @method enableTwitter
+ * @method addTwitter
  * @param  {Object} data configuration of stragtegy
  */
-Auth.prototype.enableTwitter = function (data) {
+Auth.prototype.addTwitter = function (data) {
 
   // Save config
   this.configs.twitter = data;
@@ -266,12 +266,12 @@ Auth.prototype.enableTwitter = function (data) {
 };
 
 /**
- * Enable Standard authentication
+ * add Standard authentication
  *
- * @method enableStandard
+ * @method addStandard
  * @param  {Object} data configuration of stragtegy
  */
-Auth.prototype.enableStandard = function (data) {
+Auth.prototype.addStandard = function (data) {
 
   // Save config
   this.configs.standard = data;
@@ -313,11 +313,11 @@ Auth.prototype.enableStandard = function (data) {
 };
 
 /**
- * Enable Facebook authentication
+ * add Facebook authentication
  *
  * @param  {Object} data configuration of stragtegy
  */
-Auth.prototype.enableFacebook = function (data) {
+Auth.prototype.addFacebook = function (data) {
 
   // Save config
   this.configs.facebook = data;
@@ -435,12 +435,12 @@ function setUrlSession (req) {
 }
 
 /**
- * Enable Google authentication
+ * add Google authentication
  *
- * @method enableGoogle
+ * @method addGoogle
  * @param  {Object} data configuration of stragtegy
  */
-Auth.prototype.enableGoogle = function (data) {
+Auth.prototype.addGoogle = function (data) {
 
   // Save config
   this.configs.google = data;
@@ -474,12 +474,12 @@ Auth.prototype.enableGoogle = function (data) {
 };
 
 /**
- * Enable active directory authentication
+ * add active directory authentication
  *
- * @method enableActiveDirectory
+ * @method addActiveDirectory
  * @param  {Object} data configuration of stragtegy
  */
-Auth.prototype.enableActiveDirectory = function (data) {
+Auth.prototype.addActiveDirectory = function (data) {
 
   // Save config
   this.configs.ad = data;
