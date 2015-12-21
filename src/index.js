@@ -47,6 +47,12 @@ function Auth (yLogger) {
   */
   this.configs      = {};
 
+  // define array for standard strategy
+  this.configs.standard = [];
+
+  // define array for ad strategy
+  this.configs.ad = [];
+
   /**
   * Default logger instance. can be override by set function
   *
@@ -68,7 +74,6 @@ Auth.prototype.init = function (app, AuthModel, data) {
   this.app          = app;
   this.AuthModel    = AuthModel;
   this.dataCommon   = data;
-
   // initialize passportjs
   app.use(passport.initialize());
 
@@ -186,8 +191,18 @@ Auth.prototype.setEndPoint = function () {
         // Is an request to connect user
       } else {
 
+        // retrieve object of conection
+        var connectParams = context.configs[params.provider];
+
+        // test if it's an array
+        if (_.isArray(connectParams)) {
+
+          // retrieve the Object in array
+          connectParams = connectParams[params.index];
+        }
+
         // Retrieve the function that permit to authenticate user
-        context.AuthModel[context.configs[params.provider].db.method](dataToFind).
+        context.AuthModel[connectParams.db.method](dataToFind).
         then(function (account) {
 
           // User not found for the given credentials
@@ -216,9 +231,8 @@ Auth.prototype.setEndPoint = function () {
 
     // Handle error Connection
     function handleError (error, provider, req, res) {
-
       context.logger.error('[ yocto-auth.endPoint ] error authentication for provider "' +
-      provider + '", more details : ' , error);
+      provider + '", more details : ', error);
 
       // redirect to an error page with code error in url
       res.redirect(req.session.ecrm.urlRedirectFail + '/fail?value=' +
@@ -274,7 +288,10 @@ Auth.prototype.addTwitter = function (data) {
 Auth.prototype.addStandard = function (data) {
 
   // Save config
-  this.configs.standard = data;
+  this.configs.standard.push(data);
+
+  // get index of inserted data
+  var index = this.configs.standard.length - 1;
 
   // Save context
   var context = this;
@@ -292,14 +309,14 @@ Auth.prototype.addStandard = function (data) {
   this.app.post(data.urls.connect, context.dataCommon.session,
   passport.authenticate('local', {
     failureRedirect : this.dataCommon.internalUrlRedirect +
-    '?value=' + encode('{"error":true,"provider":"standard"}')
+    '?value=' + encode('{"error":true,"provider":"standard","index":' + index + '}')
   }),
   function (req, res) {
 
     // Test Error occur during connection
     if (req.session.passport.user.error) {
       return res.redirect(context.dataCommon.internalUrlRedirect +
-        '?value=' + encode('{"error":true,"provider":"standard"}')
+        '?value=' + encode('{"error":true,"provider":"standard","index":' + index + '}')
       );
     }
 
@@ -308,7 +325,7 @@ Auth.prototype.addStandard = function (data) {
 
     // Redirect to the endPoint
     res.redirect(context.dataCommon.internalUrlRedirect +
-    '?value=' + encode('{"error":false,"provider":"standard"}'));
+    '?value=' + encode('{"error":false,"provider":"standard","index":' + index + '}'));
   });
 };
 
@@ -482,7 +499,10 @@ Auth.prototype.addGoogle = function (data) {
 Auth.prototype.addActiveDirectory = function (data) {
 
   // Save config
-  this.configs.ad = data;
+  this.configs.standard.push(data);
+
+  // get index of inserted data
+  var index = this.configs.standard.length - 1;
 
   // Save contexts
   var context = this;
@@ -507,7 +527,8 @@ Auth.prototype.addActiveDirectory = function (data) {
 
       var data = JSON.stringify({
         error     : _.isEmpty(err) ? false : true,
-        provider  : 'ad'
+        provider  : 'ad',
+        index     : index
       });
 
       // Set temporary user in session

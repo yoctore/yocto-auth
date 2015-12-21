@@ -1,3 +1,6 @@
+# 0.2.1(2015-12-21)
+  - Bug fixe : use index of array for strategies Standard and active-directory because multiple strategies can be configured
+
 # 0.2.0(2015-11-19)
   - update name of function :
     - enableStandard -> addStandard
