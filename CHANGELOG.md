@@ -1,3 +1,6 @@
+# 0.2.2(2015-12-22)
+  - Bug fixe : change test to determine if it's an join request
+
 # 0.2.1(2015-12-21)
   - Bug fixe : use index of array for strategies Standard and active-directory because multiple strategies can be configured
 

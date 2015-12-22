@@ -384,8 +384,8 @@ function bindStrategy (data, provider, context) {
     // Set url redirect in session
     setUrlSession(req);
 
-    // test if it's an join request
-    if (!_.isUndefined(req.params.id) && !_.isUndefined(req.params.id)) {
+    // test if it's an join request or not
+    if (!_.isUndefined(req.params.id) && !_.isEmpty(req.params.id) && !_.isNull(req.params.id)) {
 
       // Set data in session to determine it's an request for create auth
       req.session.join = {
