@@ -8,9 +8,8 @@ var path      = require('path');
 
 /**
  * Default export for grunt yocto-norme-plugin
- */ 
+ */
 module.exports = function (grunt) {
-
   // Default yocto config for jshint and jscs code style
   var defaultOptions = {
     jshint  : {

@@ -1,3 +1,8 @@
+# 1.0.0(2015-12-30)
+  - Use bind() and apply() instead of saving context
+  - add test on endPoint to check if session is correct
+  - package update
+
 # 0.2.2(2015-12-22)
   - Bug fixe : change test to determine if it's an join request
 

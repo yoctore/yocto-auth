@@ -39,7 +39,7 @@ function Auth (yLogger) {
   * Model Auth from mongoose model
   * @type {Object}
   */
-  this.AuthModel    = {};
+  this.authmodel    = {};
 
   /**
   * Object that contains all configuration
@@ -65,15 +65,16 @@ function Auth (yLogger) {
  * Init Middleware
  *
  * @param  {Obejct} app          THe app express
- * @param  {Obejct} AuthModel    Auth model from mongoose
+ * @param  {Obejct} authmodel    Auth model from mongoose
  * @param  {Obejct} data         configuration of stragtegy
  */
-Auth.prototype.init = function (app, AuthModel, data) {
+Auth.prototype.init = function (app, authmodel, data) {
 
   // Set data
   this.app          = app;
-  this.AuthModel    = AuthModel;
+  this.authmodel    = authmodel;
   this.dataCommon   = data;
+
   // initialize passportjs
   app.use(passport.initialize());
 
@@ -96,11 +97,25 @@ Auth.prototype.init = function (app, AuthModel, data) {
  */
 Auth.prototype.setEndPoint = function () {
 
-  // Save context
-  var context = this;
-
   // This route is the endPoint of all authentication methods
   this.app.get(this.dataCommon.internalUrlRedirect,  this.dataCommon.session, function (req, res) {
+
+    // test if the session have correct object
+    if (_.isUndefined(req.session.ecrm) || _.isUndefined(req.session.ecrm.urlRedirectFail) ||
+    _.isUndefined(req.session.ecrm.urlRedirectFail)) {
+
+      this.logger.info('[ yocto-auth.endPoint ] - an error occured when reading session, object' +
+      ' ecrm was not defined, it seems that the session was reinitialized');
+
+      // retrieve headers of request
+      var urlParse = url.parse(req.headers.referer);
+
+      // redirect client to an error auth page because
+      return res.redirect(urlParse.protocol + '//' + urlParse.host + '/auth/fail?value=' +
+      encode('{"status":"error",' +
+      '"code":"400102",' +
+      '"message":"An internal error occured, please retest to connect"}'));
+    }
 
     var params = {};
 
@@ -121,8 +136,8 @@ Auth.prototype.setEndPoint = function () {
         };
       }
 
-      // trick to pass the norme
-      var providerId  = 'provider_id';
+      // underscoreKeys data
+      var sessionTmp = utils.obj.camelizeKeys(req.session.passport.user);
 
       // Define data to find account in db ; this is for provider FB, Google, Twitter
       var dataToFind = {
@@ -130,7 +145,7 @@ Auth.prototype.setEndPoint = function () {
         provider    : params.provider,
         paramToFind : {
           'auth_type'                   : params.provider,
-          'social_profile.provider_id'  : req.session.passport.user[providerId]
+          'social_profile.provider_id'  : sessionTmp.providerId
         }
       };
 
@@ -156,13 +171,13 @@ Auth.prototype.setEndPoint = function () {
       if (!_.isUndefined(req.session.join)) {
 
         // Start process to join an social network account to an api-account
-        context.AuthModel.joinAccount(req.session.join.id, utils.obj.underscoreKeys({
+        this.authmodel.joinAccount(req.session.join.id, utils.obj.underscoreKeys({
           authType       : params.provider,
           socialProfile  : req.session.passport.user
         })).then(function () {
 
           // Association success
-          context.logger.info('[ yocto-auth.endPoint ] - Document Auth created for account : "',
+          this.logger.info('[ yocto-auth.endPoint ] - Document Auth created for account : "',
           req.session.join.id, '" for provider : "', params.provider, '"');
 
           // Call function to handle error
@@ -171,10 +186,10 @@ Auth.prototype.setEndPoint = function () {
           // redirect to the 'caller' for success with the name of provider
           res.redirect(req.session.ecrm.urlRedirectSuccess + '/join/success?value=' +
           encode('{"provider":"' + params.provider + '"}'));
-        }).catch(function (error) {
+        }.bind(this)).catch(function (error) {
 
           // An error occurred during connection
-          context.logger.error('[ yocto-auth.endPoint ] - error cannot create auth document for ' +
+          this.logger.error('[ yocto-auth.endPoint ] - error cannot create auth document for ' +
           'this social network "' , error);
 
           // uppdate error redirection
@@ -186,13 +201,13 @@ Auth.prototype.setEndPoint = function () {
 
           // call error function
           handleError(error, params.provider, req, res);
-        });
+        }.bind(this));
 
         // Is an request to connect user
       } else {
 
         // retrieve object of conection
-        var connectParams = context.configs[params.provider];
+        var connectParams = this.configs[params.provider];
 
         // test if it's an array
         if (_.isArray(connectParams)) {
@@ -202,7 +217,7 @@ Auth.prototype.setEndPoint = function () {
         }
 
         // Retrieve the function that permit to authenticate user
-        context.AuthModel[connectParams.db.method](dataToFind).
+        this.authmodel[connectParams.db.method](dataToFind).
         then(function (account) {
 
           // User not found for the given credentials
@@ -215,9 +230,9 @@ Auth.prototype.setEndPoint = function () {
 
           // redirect to the 'caller' with the id of session
           res.redirect(req.session.ecrm.urlRedirectSuccess + '/success?' + qs.stringify({
-            session : 's:' + signature.sign(req.sessionID, context.dataCommon.secretCookieKey)
+            session : 's:' + signature.sign(req.sessionID, this.dataCommon.secretCookieKey)
           }));
-        }).catch(function (error) {
+        }.bind(this)).catch(function (error) {
 
           // Call function to handle error
           handleError(error, params.provider, req, res);
@@ -230,15 +245,18 @@ Auth.prototype.setEndPoint = function () {
     }
 
     // Handle error Connection
-    function handleError (error, provider, req, res) {
-      context.logger.error('[ yocto-auth.endPoint ] error authentication for provider "' +
+    var handleError = function (error, provider, req, res) {
+
+      this.logger.error('[ yocto-auth.endPoint ] error authentication for provider "' +
       provider + '", more details : ', error);
 
       // redirect to an error page with code error in url
       res.redirect(req.session.ecrm.urlRedirectFail + '/fail?value=' +
-      encode('{"status":"error","code":"400101"}'));
-    }
-  });
+      encode('{"status":"error",' +
+      '"code":"400101",' +
+      '"message":"User not found for the given credentials"}'));
+    }.bind(this);
+  }.bind(this));
 };
 
 /**
@@ -276,7 +294,7 @@ Auth.prototype.addTwitter = function (data) {
   }));
 
   // bind this strategy to middleware
-  bindStrategy(data, 'twitter', this);
+  bindStrategy.apply(this, [data, 'twitter']);
 };
 
 /**
@@ -293,9 +311,6 @@ Auth.prototype.addStandard = function (data) {
   // get index of inserted data
   var index = this.configs.standard.length - 1;
 
-  // Save context
-  var context = this;
-
   // Define strateg local
   passport.use(new Strategy(function (username, password, done) {
 
@@ -306,7 +321,7 @@ Auth.prototype.addStandard = function (data) {
     });
   }));
 
-  this.app.post(data.urls.connect, context.dataCommon.session,
+  this.app.post(data.urls.connect, this.dataCommon.session,
   passport.authenticate('local', {
     failureRedirect : this.dataCommon.internalUrlRedirect +
     '?value=' + encode('{"error":true,"provider":"standard","index":' + index + '}')
@@ -315,7 +330,7 @@ Auth.prototype.addStandard = function (data) {
 
     // Test Error occur during connection
     if (req.session.passport.user.error) {
-      return res.redirect(context.dataCommon.internalUrlRedirect +
+      return res.redirect(this.dataCommon.internalUrlRedirect +
         '?value=' + encode('{"error":true,"provider":"standard","index":' + index + '}')
       );
     }
@@ -324,9 +339,9 @@ Auth.prototype.addStandard = function (data) {
     setUrlSession(req);
 
     // Redirect to the endPoint
-    res.redirect(context.dataCommon.internalUrlRedirect +
+    res.redirect(this.dataCommon.internalUrlRedirect +
     '?value=' + encode('{"error":false,"provider":"standard","index":' + index + '}'));
-  });
+  }.bind(this));
 };
 
 /**
@@ -365,7 +380,7 @@ Auth.prototype.addFacebook = function (data) {
   }));
 
   // bind this strategy to middleware
-  bindStrategy(data, 'facebook', this);
+  bindStrategy.apply(this, [data, 'facebook']);
 };
 
 /**
@@ -374,12 +389,13 @@ Auth.prototype.addFacebook = function (data) {
  *
  * @param  {Object} data        Data of the routes and strategy
  * @param  {String} provider    Name of the provider
- * @param  {Object} context     The main context
  */
-function bindStrategy (data, provider, context) {
+function bindStrategy (data, provider) {
+
+  console.log('provide : ', provider);
 
   // Create the call route for an strategy
-  context.app.get(data.urls.connect, context.dataCommon.session, function (req, res, next) {
+  this.app.get(data.urls.connect, this.dataCommon.session, function (req, res, next) {
 
     // Set url redirect in session
     setUrlSession(req);
@@ -400,12 +416,12 @@ function bindStrategy (data, provider, context) {
   } : {}));
 
   // Create the callback route
-  context.app.get(data.urls.callback, context.dataCommon.session, passport.authenticate(provider, {
+  this.app.get(data.urls.callback, this.dataCommon.session, passport.authenticate(provider, {
 
     // Set  callback to endPoint
-    failureRedirect : context.dataCommon.internalUrlRedirect +
+    failureRedirect : this.dataCommon.internalUrlRedirect +
     '?value=' + encode('{"error":true,"provider":"' + provider + '"}'),
-    successRedirect : context.dataCommon.internalUrlRedirect +
+    successRedirect : this.dataCommon.internalUrlRedirect +
     '?value=' + encode('{"error":false,"provider":"' + provider + '"}')
   }));
 }
@@ -487,7 +503,7 @@ Auth.prototype.addGoogle = function (data) {
   }));
 
   // Bind the current stragtegy
-  bindStrategy(data, 'google', this);
+  bindStrategy.apply(this, [data, 'google']);
 };
 
 /**
@@ -504,9 +520,6 @@ Auth.prototype.addActiveDirectory = function (data) {
   // get index of inserted data
   var index = this.configs.standard.length - 1;
 
-  // Save contexts
-  var context = this;
-
   passport.use(new LdapStrategy({
     server        : data.server,
     usernameField : 'username',
@@ -518,7 +531,7 @@ Auth.prototype.addActiveDirectory = function (data) {
   }));
 
   // Declare express route
-  this.app.post(data.urls.connect, context.dataCommon.session, function (req, res, next) {
+  this.app.post(data.urls.connect, this.dataCommon.session, function (req, res, next) {
 
     // Set url redirect in session
     setUrlSession(req);
@@ -537,11 +550,11 @@ Auth.prototype.addActiveDirectory = function (data) {
       };
 
       // Redirect to endPoint
-      res.redirect(context.dataCommon.internalUrlRedirect +
+      res.redirect(this.dataCommon.internalUrlRedirect +
       '?value=' + encode(data));
 
     })(req, res, next);
-  });
+  }.bind(this));
 };
 
 // Exports Middleware
