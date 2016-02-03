@@ -1,3 +1,6 @@
+# 1.0.1 (2016-02-03)
+  - bug fix : add bind(this) on Active directory strategy
+
 # 1.0.0(2015-12-30)
   - Use bind() and apply() instead of saving context
   - add test on endPoint to check if session is correct

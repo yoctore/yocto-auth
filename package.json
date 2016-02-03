@@ -1,6 +1,6 @@
 {
   "name": "yocto-auth",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Yocto auth is an express middleware that permit an user to login it on an api, the module is based on passportJS",
   "main": "src/index.js",
   "files": [

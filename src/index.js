@@ -515,10 +515,10 @@ Auth.prototype.addGoogle = function (data) {
 Auth.prototype.addActiveDirectory = function (data) {
 
   // Save config
-  this.configs.standard.push(data);
+  this.configs.ad.push(data);
 
   // get index of inserted data
-  var index = this.configs.standard.length - 1;
+  var index = this.configs.ad.length - 1;
 
   passport.use(new LdapStrategy({
     server        : data.server,
@@ -536,10 +536,11 @@ Auth.prototype.addActiveDirectory = function (data) {
     // Set url redirect in session
     setUrlSession(req);
 
+    // LDAP Strategy
     passport.authenticate('ldapauth', function (err, user) {
 
       var data = JSON.stringify({
-        error     : _.isEmpty(err) ? false : true,
+        error     : _.isNull(err) ? false : true,
         provider  : 'ad',
         index     : index
       });
@@ -553,7 +554,7 @@ Auth.prototype.addActiveDirectory = function (data) {
       res.redirect(this.dataCommon.internalUrlRedirect +
       '?value=' + encode(data));
 
-    })(req, res, next);
+    }.bind(this))(req, res, next);
   }.bind(this));
 };
 
