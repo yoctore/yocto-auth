@@ -1,6 +1,6 @@
 {
   "name": "yocto-auth",
-  "version": "1.0.1",
+  "version": "0.5.0",
   "description": "Yocto auth is an express middleware that permit an user to login it on an api, the module is based on passportJS",
   "main": "src/index.js",
   "files": [
@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@gitlab.com/yocto-node-modules/yocto-auth.git"
+    "url": "https://github.com/yoctore/yocto-auth.git"
   },
   "keywords": [
     "passportJS"
@@ -33,9 +33,9 @@
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://gitlab.com/yocto-node-modules/yocto-auth/issues"
+    "url": "https://github.com/yoctore/yocto-auth/issues"
   },
-  "homepage": "https://gitlab.com/yocto-node-modules/yocto-auth#README",
+  "homepage": "https://github.com/yoctore/yocto-auth#README",
   "dependencies": {
     "base-64": "0.1.0",
     "cookie-signature": "1.0.6",

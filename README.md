@@ -1,4 +1,5 @@
-# Yocto auth
+![alt text](https://david-dm.org/yoctore/yocto-auth.svg "Dependencies Status")
+
 ## Middleware for ExpressJS
 
 This module permit an user to in an api by implementing passportJS and his strategies.
