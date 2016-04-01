@@ -80,7 +80,7 @@ module.exports = function (grunt) {
   // register tasks
   grunt.registerTask('report', 'todo');
   grunt.registerTask('hint', [ 'yoctohint' ]);
-  grunt.registerTask('tests', 'mochacli');
+  grunt.registerTask('test', 'mochacli');
   grunt.registerTask('build', [ 'yoctohint', 'clean:dist', 'copy', 'uglify' ]);
-  grunt.registerTask('default', [ 'tests', 'build' ]);
+  grunt.registerTask('default', [ 'test', 'build' ]);
 };
