@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@gitlab.com/yocto-node-modules/yocto-auth.git"
+    "url": "https://github.com/yoctore/yocto-auth.git"
   },
   "keywords": [
     "passportJS"
@@ -32,9 +32,9 @@
   },
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://gitlab.com/yocto-node-modules/yocto-auth/issues"
+    "url": "https://github.com/yoctore/yocto-auth/issues"
   },
-  "homepage": "https://gitlab.com/yocto-node-modules/yocto-auth#README",
+  "homepage": "https://github.com/yoctore/yocto-auth#README",
   "dependencies": {
     "base-64": "0.1.0",
     "cookie-signature": "1.0.6",
