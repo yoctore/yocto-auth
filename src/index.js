@@ -69,6 +69,13 @@ function Auth (yLogger) {
  * @param  {Obejct} data         configuration of stragtegy
  */
 Auth.prototype.init = function (app, authmodel, data) {
+  // check if necessary data is defined
+  if (_.isUndefined(app) || _.isNull(app) || _.isEmpty(app) ||
+  _.isUndefined(authmodel) || _.isNull(authmodel) || _.isEmpty(authmodel) ||
+  _.isUndefined(data) || _.isNull(data) || _.isEmpty(data)) {
+    // init false
+    return false;
+  }
 
   // Set data
   this.app          = app;
@@ -90,6 +97,9 @@ Auth.prototype.init = function (app, authmodel, data) {
 
   // Set end point
   this.setEndPoint();
+
+  // success init
+  return true;
 };
 
 /**

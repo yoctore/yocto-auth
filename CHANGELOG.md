@@ -1,3 +1,6 @@
+# 1.0.2 (2016-04-04)
+  - update package.json
+
 # 1.0.1 (2016-02-03)
   - bug fix : add bind(this) on Active directory strategy
 

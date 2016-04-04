@@ -1,3 +1,11 @@
+[![NPM](https://nodei.co/npm/yocto-auth.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/yocto-auth/)
+
+![alt text](https://david-dm.org/yoctore/yocto-auth.svg "Dependencies Status")
+[![Code Climate](https://codeclimate.com/github/yoctore/yocto-auth/badges/gpa.svg)](https://codeclimate.com/github/yoctore/yocto-auth)
+[![Test Coverage](https://codeclimate.com/github/yoctore/yocto-auth/badges/coverage.svg)](https://codeclimate.com/github/yoctore/yocto-auth/coverage)
+[![Issue Count](https://codeclimate.com/github/yoctore/yocto-auth/badges/issue_count.svg)](https://codeclimate.com/github/yoctore/yocto-auth)
+[![Build Status](https://travis-ci.org/yoctore/yocto-auth.svg?branch=master)](https://travis-ci.org/yoctore/yocto-auth)
+
 # Yocto auth
 ## Middleware for ExpressJS
 

@@ -1,6 +1,6 @@
 {
   "name": "yocto-auth",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Yocto auth is an express middleware that permit an user to login it on an api, the module is based on passportJS",
   "main": "src/index.js",
   "files": [
@@ -11,7 +11,7 @@
   ],
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "grunt test"
   },
   "repository": {
     "type": "git",
@@ -20,7 +20,7 @@
   "keywords": [
     "passportJS"
   ],
-  "author": "Yocto SAS <http://www.yocto.re>",
+  "author": "",
   "contributors": [
     {
       "name": "BALARD Cédric",
@@ -28,10 +28,9 @@
     }
   ],
   "engines": {
-    "node": ">=0.12.2"
+    "node": ">=4.3.1"
   },
-  "author": "",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://gitlab.com/yocto-node-modules/yocto-auth/issues"
   },
@@ -39,25 +38,29 @@
   "dependencies": {
     "base-64": "0.1.0",
     "cookie-signature": "1.0.6",
-    "lodash": "3.10.1",
+    "lodash": "4.7.0",
     "passport": "0.3.2",
-    "passport-facebook": "2.0.0",
-    "passport-google-oauth": "0.2.0",
+    "passport-facebook": "2.1.0",
+    "passport-google-oauth": "1.0.0",
     "passport-ldapauth": "0.5.0",
     "passport-local": "1.0.0",
-    "passport-twitter": "1.0.3",
-    "qs": "6.0.1",
+    "passport-twitter": "1.0.4",
+    "qs": "6.1.0",
     "utf8": "2.1.1",
-    "yocto-logger": "1.1.1",
-    "yocto-utils": "^1.1.2"
+    "yocto-logger": "1.1.5",
+    "yocto-utils": "1.2.8"
   },
   "devDependencies": {
+    "chai": "^3.5.0",
+    "express": "^4.13.4",
     "grunt": "^0.4.5",
-    "grunt-contrib-clean": "^0.7.0",
-    "grunt-contrib-copy": "^0.8.2",
-    "grunt-contrib-uglify": "^0.11.0",
+    "grunt-contrib-clean": "^1.0.0",
+    "grunt-contrib-copy": "1.0.0",
+    "grunt-contrib-uglify": "1.0.1",
     "grunt-mocha-cli": "^2.0.0",
+    "grunt-mocha-test": "^0.12.7",
     "grunt-todo": "^0.5.0",
+    "mocha": "^2.4.5",
     "yocto-hint": "^1.2.7"
   }
 }

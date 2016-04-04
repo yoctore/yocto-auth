@@ -46,18 +46,6 @@ module.exports = function (grunt) {
     clean     : {
       dist        : [ 'dist/*']
     },
-    // test our app
-    mochacli  : {
-      options : {
-        'reporter'       : 'spec',
-        'inline-diffs'   : false,
-        'no-exit'        : true,
-        'force'          : false,
-        'check-leaks'    : true,
-        'bail'           : false
-      },
-      all     : [ 'tests/unit/*.js' ]
-    },
     // copy files
     copy      : {
       all : {
@@ -66,12 +54,22 @@ module.exports = function (grunt) {
         src     : '**',
         dest    : 'dist/'
       }
+    },
+    // unit testing
+    mochaTest : {
+      // Test all unit test
+      all  : {
+        options : {
+          reporter : 'spec',
+        },
+        src     : [ 'test/unit/*.js' ]
+      }
     }
   });
 
   // load tasks
   grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-mocha-cli');
+  grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-todo');
   grunt.loadNpmTasks('yocto-hint');
   grunt.loadNpmTasks('grunt-contrib-copy');
@@ -80,7 +78,7 @@ module.exports = function (grunt) {
   // register tasks
   grunt.registerTask('report', 'todo');
   grunt.registerTask('hint', [ 'yoctohint' ]);
-  grunt.registerTask('tests', 'mochacli');
+  grunt.registerTask('test', 'mochaTest');
   grunt.registerTask('build', [ 'yoctohint', 'clean:dist', 'copy', 'uglify' ]);
   grunt.registerTask('default', [ 'tests', 'build' ]);
 };
