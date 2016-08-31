@@ -114,8 +114,11 @@ Auth.prototype.setEndPoint = function () {
     if (_.isUndefined(req.session.ecrm) || _.isUndefined(req.session.ecrm.urlRedirectFail) ||
     _.isUndefined(req.session.ecrm.urlRedirectFail)) {
 
-      this.logger.info('[ yocto-auth.endPoint ] - an error occured when reading session, object' +
+      this.logger.error('[ yocto-auth.endPoint ] - an error occured when reading session, object' +
       ' ecrm was not defined, it seems that the session was reinitialized');
+
+      this.logger.debug('[ yocto-auth.endPoint ] - session that was in error : ' +
+      utils.obj.inspect(req.session));
 
       // retrieve headers of request
       var urlParse = url.parse(req.headers.referer);
@@ -127,6 +130,7 @@ Auth.prototype.setEndPoint = function () {
       '"message":"An internal error occured, please retest to connect"}'));
     }
 
+    // Set default params
     var params = {};
 
     // Use try to prevent parse error
@@ -258,7 +262,7 @@ Auth.prototype.setEndPoint = function () {
     var handleError = function (error, provider, req, res) {
 
       this.logger.error('[ yocto-auth.endPoint ] error authentication for provider "' +
-      provider + '", more details : ', error);
+      provider + '", more details : ', utils.obj.inspect(error));
 
       // redirect to an error page with code error in url
       res.redirect(req.session.ecrm.urlRedirectFail + '/fail?value=' +
@@ -331,6 +335,7 @@ Auth.prototype.addStandard = function (data) {
     });
   }));
 
+  // Add standard connection
   this.app.post(data.urls.connect, this.dataCommon.session,
   passport.authenticate('local', {
     failureRedirect : this.dataCommon.internalUrlRedirect +
@@ -338,15 +343,23 @@ Auth.prototype.addStandard = function (data) {
   }),
   function (req, res) {
 
+    this.logger.debug('[ yocto-auth.addStandard.cb ] - value of req.session.passport.user = ' +
+    utils.obj.inspect(req.session.passport.user));
+
     // Test Error occur during connection
     if (req.session.passport.user.error) {
+
+      this.logger.error('[ yocto-auth.addStandard.cb ] - error when finding session, ' +
+      ' more details : ' + utils.obj.inspect(req.session.passport.user.error));
+
+      // error so redirect to endPoint
       return res.redirect(this.dataCommon.internalUrlRedirect +
         '?value=' + encode('{"error":true,"provider":"standard","index":' + index + '}')
       );
     }
 
     // Set url redirect in session
-    setUrlSession(req);
+    setUrlSession.apply(this, [ req ]);
 
     // Redirect to the endPoint
     res.redirect(this.dataCommon.internalUrlRedirect +
@@ -402,13 +415,11 @@ Auth.prototype.addFacebook = function (data) {
  */
 function bindStrategy (data, provider) {
 
-  console.log('provide : ', provider);
-
   // Create the call route for an strategy
   this.app.get(data.urls.connect, this.dataCommon.session, function (req, res, next) {
 
     // Set url redirect in session
-    setUrlSession(req);
+    setUrlSession.apply(this, [ req ]);
 
     // test if it's an join request or not
     if (!_.isUndefined(req.params.id) && !_.isEmpty(req.params.id) && !_.isNull(req.params.id)) {
@@ -466,6 +477,9 @@ function decode (data) {
  * @param  {Object} req Default obj req of ExpressJS
  */
 function setUrlSession (req) {
+  // log info
+  this.logger.debug('[ yocto-auth.setUrlSession ] - headers.referer value is : ',
+  req.headers.referer);
 
   // retrieve headers of request
   var urlParse = url.parse(req.headers.referer);
@@ -475,6 +489,10 @@ function setUrlSession (req) {
     urlRedirectSuccess : urlParse.protocol + '//' + urlParse.host + '/auth',
     urlRedirectFail    : urlParse.protocol + '//' + urlParse.host + '/auth'
   };
+
+  // log info
+  this.logger.debug('[ yocto-auth.setUrlSession ] - url was set in session, req.session = ',
+  utils.obj.inspect(req.session));
 }
 
 /**
@@ -544,7 +562,7 @@ Auth.prototype.addActiveDirectory = function (data) {
   this.app.post(data.urls.connect, this.dataCommon.session, function (req, res, next) {
 
     // Set url redirect in session
-    setUrlSession(req);
+    setUrlSession.apply(this, [ req ]);
 
     // LDAP Strategy
     passport.authenticate('ldapauth', function (err, user) {
