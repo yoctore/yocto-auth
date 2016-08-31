@@ -1,3 +1,6 @@
+# 1.0.3 (2016-08-31)
+  - Add more logs into connect standard process
+
 # 1.0.2 (2016-04-04)
   - update package.json
 
