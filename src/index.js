@@ -432,7 +432,7 @@ function bindStrategy (data, provider) {
 
     // call next route
     next();
-  }, passport.authenticate(provider, provider === 'google' ? {
+  }.bind(this), passport.authenticate(provider, provider === 'google' ? {
     scope : data.scope
   } : {}));
 
