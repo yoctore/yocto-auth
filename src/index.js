@@ -182,7 +182,8 @@ Auth.prototype.setEndPoint = function () {
       }
 
       // test if we create an Auth document for Social network
-      if (!_.isUndefined(req.session.join)) {
+      if (!_.isUndefined(req.session.join) && !_.isNull(req.session.join) &&
+      !_.isEmpty(req.session.join)) {
 
         // Start process to join an social network account to an api-account
         this.authmodel.joinAccount(req.session.join.id, utils.obj.underscoreKeys({
@@ -420,6 +421,9 @@ function bindStrategy (data, provider) {
 
     // Set url redirect in session
     setUrlSession.apply(this, [ req ]);
+
+    // initialize join session
+    req.session.join = {};
 
     // test if it's an join request or not
     if (!_.isUndefined(req.params.id) && !_.isEmpty(req.params.id) && !_.isNull(req.params.id)) {

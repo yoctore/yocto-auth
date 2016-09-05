@@ -1,3 +1,6 @@
+# 1.0.4 (2016-09-05)
+  - Remove field 'join' when make an association to avoid error
+
 # 1.0.3 (2016-08-31)
   - Add more logs into connect standard process
 
