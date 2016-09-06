@@ -107,6 +107,19 @@ Auth.prototype.init = function (app, authmodel, data) {
  */
 Auth.prototype.setEndPoint = function () {
 
+  // Handle error Connection
+  var handleError = function (error, provider, req, res) {
+
+    this.logger.error('[ yocto-auth.endPoint ] error authentication for provider "' +
+    provider + '", more details : ', utils.obj.inspect(error));
+
+    // redirect to an error page with code error in url
+    res.redirect(req.session.ecrm.urlRedirectFail + '/fail?value=' +
+    encode('{"status":"error",' +
+    '"code":"400101",' +
+    '"message":"User not found for the given credentials"}'));
+  }.bind(this);
+
   // This route is the endPoint of all authentication methods
   this.app.get(this.dataCommon.internalUrlRedirect,  this.dataCommon.session, function (req, res) {
 
@@ -258,19 +271,6 @@ Auth.prototype.setEndPoint = function () {
       // Call function to handle error
       handleError(error.details, error.provider, req, res);
     }
-
-    // Handle error Connection
-    var handleError = function (error, provider, req, res) {
-
-      this.logger.error('[ yocto-auth.endPoint ] error authentication for provider "' +
-      provider + '", more details : ', utils.obj.inspect(error));
-
-      // redirect to an error page with code error in url
-      res.redirect(req.session.ecrm.urlRedirectFail + '/fail?value=' +
-      encode('{"status":"error",' +
-      '"code":"400101",' +
-      '"message":"User not found for the given credentials"}'));
-    }.bind(this);
   }.bind(this));
 };
 
