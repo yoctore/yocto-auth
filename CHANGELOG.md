@@ -1,3 +1,8 @@
+# 2.0.0 (2018-03-20)
+  - Update all node modules
+  - Set node engine version to 8.9.4
+  - Add possibility to add optional config when init facebook provider
+
 # 1.0.4 (2016-09-05)
   - Remove field 'join' when make an association to avoid error
 

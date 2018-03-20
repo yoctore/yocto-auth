@@ -25,8 +25,15 @@ module.exports = function (grunt) {
 
     // hint our app
     yoctohint : {
-      options  : {},
-      all      : [ 'src/***', 'Gruntfile.js' ]
+      json : [
+        'package.json'
+      ],
+      node : [
+        'src/***'
+      ],
+      options : {
+        compatibility : true
+      }
     },
 
     // Uglify our app
